@@ -13,8 +13,17 @@ const PORT = process.env.PORT || 3000;
 
 
 const store = new mongoDBSession({
-  uri: 'mongodb://127.0.0.1:27017/myDB',
+  uri: 'mongodb+srv://omar01:password123456@cluster0.qxk3fin.mongodb.net/myDB',
   collection: 'Sessions'
+});
+
+
+var collection;
+
+MongoClient.connect("mongodb+srv://omar01:password123456@cluster0.qxk3fin.mongodb.net/?retryWrites=true&w=majority", function (err, client) {
+  if (err) throw err;
+  var db = client.db('myDB');
+  collection = db.collection('myCollection');
 });
 
 
@@ -120,30 +129,15 @@ app.post('/search', function (req, res) {
   const potentialsearchres = ['bali', 'santorini', 'paris', 'rome', 'inca', 'annapurna'];
   const result = [];
   potentialsearchres.forEach(city => {
-    if (city.includes(req.body.Search)) {
-
-
+    if (city.includes(req.body.Search))
       result.push(city);
-
-    }
-
   });
-
-
-
   
   res.render('searchresults', { result });
 });
 
 
 
-
-
-MongoClient.connect("mongodb://127.0.0.1:27017", function (err, client) {
-  if (err) throw err;
-  var db = client.db('myDB');
-
-});
 
 
 app.post('/login', async (req, res) => {
@@ -157,11 +151,6 @@ app.post('/login', async (req, res) => {
     return;
   }
 
-  const client = await MongoClient.connect("mongodb://127.0.0.1:27017", {
-    useNewUrlParser: true
-  });
-  const db = client.db('myDB');
-  const collection = db.collection('myCollection');
   const user = await collection.findOne({ username });
   
   if (!user) {
@@ -198,11 +187,6 @@ app.post('/register', async (req, res) => {
     `);
     return;
   }
-  const client = await MongoClient.connect("mongodb://127.0.0.1:27017", {
-    useNewUrlParser: true
-  });
-  var db = client.db('myDB');
-  const collection = db.collection('myCollection');
   const user = await collection.findOne({ username });
 
   if (!user) {
@@ -215,12 +199,10 @@ app.post('/register', async (req, res) => {
 
 
       res.send(`
-  Successfully registered!
-    <br>
-    <a href="/login">Go to login page</a>
-  `);
-
-
+      Successfully registered!
+        <br>
+        <a href="/login">Go to login page</a>
+      `);
     });
 
   }
@@ -231,50 +213,28 @@ app.post('/register', async (req, res) => {
       <a href="/registration">Go back to registeration page</a>
     `);
   }
-
-
-
 });
 
 
-
-
-
-
-
-
-app.post('/paris', function (req, res) {
-  var MongoClient = require('mongodb').MongoClient;
-  MongoClient.connect("mongodb://127.0.0.1:27017", async function (err, client) {
-    if (err) throw err;
-    var db = client.db('myDB');
-
-    var exist = await db.collection('myCollection').findOne({ username: req.session.username, wanttogo: { $elemMatch: { name: "Paris" } } });
+app.post('/paris', async function (req, res) {
+    var exist = await collection.findOne({ username: req.session.username, wanttogo: { $elemMatch: { name: "Paris" } } });
 
     if (!exist) {
-      db.collection('myCollection').updateOne({ username: req.session.username }, { $push: { wanttogo: { name: "Paris" } } });
-
+      collection.updateOne({ username: req.session.username }, { $push: { wanttogo: { name: "Paris" } } });
     }
     else {
       alert("This Destination Already Exist");
     }
     res.render('paris');
 
-
-
-  });
 });
 
-app.post('/annapurna', function (req, res) {
-  var MongoClient = require('mongodb').MongoClient;
-  MongoClient.connect("mongodb://127.0.0.1:27017", async function (err, client) {
-    if (err) throw err;
-    var db = client.db('myDB');
+app.post('/annapurna', async function (req, res) {
 
-    var exist = await db.collection('myCollection').findOne({ username: req.session.username, wanttogo: { $elemMatch: { name: "Annapurna" } } });
+    var exist = await collection.findOne({ username: req.session.username, wanttogo: { $elemMatch: { name: "Annapurna" } } });
 
     if (!exist) {
-      db.collection('myCollection').updateOne({ username: req.session.username }, { $push: { wanttogo: { name: "Annapurna" } } });
+      collection.updateOne({ username: req.session.username }, { $push: { wanttogo: { name: "Annapurna" } } });
 
     }
     else {
@@ -282,72 +242,43 @@ app.post('/annapurna', function (req, res) {
     }
     res.render('annapurna');
 
-
-
-  });
-
-
 });
 
 
-app.post('/bali', function (req, res) {
-  var MongoClient = require('mongodb').MongoClient;
-  MongoClient.connect("mongodb://127.0.0.1:27017", async function (err, client) {
-    if (err) throw err;
-    var db = client.db('myDB');
+app.post('/bali', async function (req, res) {
 
-    var exist = await db.collection('myCollection').findOne({ username: req.session.username, wanttogo: { $elemMatch: { name: "Bali" } } });
+    var exist = await collection.findOne({ username: req.session.username, wanttogo: { $elemMatch: { name: "Bali" } } });
 
     if (!exist) {
-      db.collection('myCollection').updateOne({ username: req.session.username }, { $push: { wanttogo: { name: "Bali" } } });
-
+      collection.updateOne({ username: req.session.username }, { $push: { wanttogo: { name: "Bali" } } });
     }
     else {
       alert("This Destination Already Exist");
     }
     res.render('bali');
 
-
-
-  });
-
-
 });
 
-app.post('/inca', function (req, res) {
-  var MongoClient = require('mongodb').MongoClient;
-  MongoClient.connect("mongodb://127.0.0.1:27017", async function (err, client) {
-    if (err) throw err;
-    var db = client.db('myDB');
+app.post('/inca', async function (req, res) {
 
-    var exist = await db.collection('myCollection').findOne({ username: req.session.username, wanttogo: { $elemMatch: { name: "Inca" } } });
+    var exist = await collection.findOne({ username: req.session.username, wanttogo: { $elemMatch: { name: "Inca" } } });
 
     if (!exist) {
-      db.collection('myCollection').updateOne({ username: req.session.username }, { $push: { wanttogo: { name: "Inca" } } });
-
+      collection.updateOne({ username: req.session.username }, { $push: { wanttogo: { name: "Inca" } } });
     }
     else {
       alert("This Destination Already Exist");
     }
     res.render('inca');
 
-    
-
-  });
-
-
 });
 
-app.post('/rome', function (req, res) {
-  var MongoClient = require('mongodb').MongoClient;
-  MongoClient.connect("mongodb://127.0.0.1:27017", async function (err, client) {
-    if (err) throw err;
-    var db = client.db('myDB');
+app.post('/rome', async function (req, res) {
 
-    var exist = await db.collection('myCollection').findOne({ username: req.session.username, wanttogo: { $elemMatch: { name: "Rome" } } });
+    var exist = await collection.findOne({ username: req.session.username, wanttogo: { $elemMatch: { name: "Rome" } } });
 
     if (!exist) {
-      db.collection('myCollection').updateOne({ username: req.session.username }, { $push: { wanttogo: { name: "Rome" } } });
+      collection.updateOne({ username: req.session.username }, { $push: { wanttogo: { name: "Rome" } } });
 
     }
     else {
@@ -355,52 +286,31 @@ app.post('/rome', function (req, res) {
     }
     res.render('rome');
 
-   
-
-  });
-
-
 });
 
-app.post('/santorini', function (req, res) {
-  var MongoClient = require('mongodb').MongoClient;
-  MongoClient.connect("mongodb://127.0.0.1:27017", async function (err, client) {
-    if (err) throw err;
-    var db = client.db('myDB');
+app.post('/santorini', async function (req, res) {
 
-    var exist = await db.collection('myCollection').findOne({ username: req.session.username, wanttogo: { $elemMatch: { name: "Santorini" } } });
+    var exist = await collection.findOne({ username: req.session.username, wanttogo: { $elemMatch: { name: "Santorini" } } });
 
     if (!exist) {
-      db.collection('myCollection').updateOne({ username: req.session.username }, { $push: { wanttogo: { name: "Santorini" } } });
-
+      collection.updateOne({ username: req.session.username }, { $push: { wanttogo: { name: "Santorini" } } });
     }
     else {
       alert("This Destination Already Exist");
     }
     res.render('santorini');
 
-
-
-  });
-
-
 });
 
 
 
-app.get('/wanttogo', function (req, res) {
+app.get('/wanttogo', async function (req, res) {
   if (req.session.authenticated) {
 
-    var MongoClient = require('mongodb').MongoClient;
-    MongoClient.connect("mongodb://127.0.0.1:27017", async function (err, client) {
-      if (err) throw err;
-      var db = client.db('myDB');
-
-      var exist = await db.collection('myCollection').findOne({ username: req.session.username });
+      var exist = await collection.findOne({ username: req.session.username });
 
       var a = await exist.wanttogo;
       res.render('wanttogo', { wtg: a });
-    });
   }
   else
     res.redirect('login');

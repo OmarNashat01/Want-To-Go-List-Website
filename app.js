@@ -12,19 +12,19 @@ var app = express();
 const PORT = process.env.PORT || 3000;
 
 
-// const store = new mongoDBSession({
-//   uri: 'mongodb+srv://omar01:password123456@cluster0.qxk3fin.mongodb.net/myDB',
-//   collection: 'Sessions'
-// });
+const store = new mongoDBSession({
+  uri: 'mongodb+srv://omar01:password123456@cluster0.qxk3fin.mongodb.net/myDB',
+  collection: 'Sessions'
+});
 
 
-// var collection;
+var collection;
 
-// MongoClient.connect("mongodb+srv://omar01:password123456@cluster0.qxk3fin.mongodb.net/?retryWrites=true&w=majority", function (err, client) {
-//   if (err) throw err;
-//   var db = client.db('myDB');
-//   collection = db.collection('myCollection');
-// });
+MongoClient.connect("mongodb+srv://omar01:password123456@cluster0.qxk3fin.mongodb.net/?retryWrites=true&w=majority", function (err, client) {
+  if (err) throw err;
+  var db = client.db('myDB');
+  collection = db.collection('myCollection');
+});
 
 
 

@@ -369,6 +369,11 @@ app.get('/wanttogo', async function (req, res) {
     }
     var exist = await collection.findOne({ username: req.session.username });
 
+    if (exist == null) {
+      res.render('wanttogo', { wtg: [] });
+      return;
+    }
+
     var a = await exist.wanttogo;
     res.render('wanttogo', { wtg: a });
   }
